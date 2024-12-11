@@ -11,7 +11,8 @@ CREATE TABLE IF NOT EXISTS `Product` (
 CREATE TABLE IF NOT EXISTS `Review` (
     `id`          BIGINT(20) NOT NULL AUTO_INCREMENT PRIMARY KEY,
     `productId`   BIGINT(20) NOT NULL,
-    `userId`      TINYINT NOT NULL,
+    `userId`      BIGINT(20) NOT NULL,
+    `score`       TINYINT NOT NULL,
     `content`     TEXT NOT NULL,
     `imageUrl`    VARCHAR(255),
     `createdAt`   DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,

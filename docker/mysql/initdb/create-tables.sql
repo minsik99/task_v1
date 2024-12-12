@@ -1,5 +1,3 @@
-USE `firstTask`;
-
 -- 제품 테이블
 CREATE TABLE IF NOT EXISTS `Product` (
     `id`          BIGINT(20) NOT NULL AUTO_INCREMENT PRIMARY KEY,
@@ -22,3 +20,6 @@ CREATE TABLE IF NOT EXISTS `Review` (
 
 -- 가장 최근에 작성된 리뷰 순으로 정렬된 리뷰 조회를 위한 인덱스
 CREATE INDEX `idx_review_createdAt` ON `Review` (`productId`, `createdAt`);
+
+-- 테스트를 위해 Product 테이블에 데이터 하나 추가
+INSERT INTO Product (reviewCount, score) VALUES (0, 0.0);

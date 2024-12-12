@@ -1,13 +1,19 @@
 package com.sparta.task_v1.service;
 
+import com.sparta.task_v1.dto.AllReviewResponseDto;
 import com.sparta.task_v1.dto.ReviewRequestDto;
+import com.sparta.task_v1.dto.ReviewResponseDto;
 import com.sparta.task_v1.entity.Product;
 import com.sparta.task_v1.entity.Review;
 import com.sparta.task_v1.repository.ProductRepository;
 import com.sparta.task_v1.repository.ReviewRepository;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
+
+import java.util.List;
 
 @Service
 public class ReviewService {
@@ -19,6 +25,39 @@ public class ReviewService {
         this.reviewRepository = reviewRepository;
         this.productRepository = productRepository;
     }
+
+    // 리뷰 조회
+    @Transactional(readOnly = true)
+    public AllReviewResponseDto getReviews(Long productId, Long cursor, int size) {
+
+        // 상품 조회
+        Product product = productRepository.findById(productId)
+                .orElseThrow(() -> new IllegalArgumentException("해당 상품이 존재하지 않습니다."));
+
+        // 페이징 처리
+        Pageable pageable = PageRequest.of(0, size);
+        List<Review> reviews;
+        reviews = reviewRepository.findReviewsByProductIdAndCursor(productId, cursor, pageable);
+
+        // 총 리뷰 수와 평균 점수
+        long totalCount = product.getReviewCount();
+        float averageScore = product.getScore();
+
+        // 리뷰 응답 DTO 변환
+        List<ReviewResponseDto> reviewResponseDtoList = reviews.stream()
+                .map(review -> new ReviewResponseDto(
+                        review.getId(),
+                        review.getUserId(),
+                        review.getScore(),
+                        review.getContent(),
+                        review.getImageUrl(),
+                        review.getCreatedAt()))
+                .toList();
+
+        // 전체 응답 반환
+        return new AllReviewResponseDto(totalCount, averageScore, cursor, reviewResponseDtoList);
+    }
+
 
     // 리뷰 등록
     @Transactional

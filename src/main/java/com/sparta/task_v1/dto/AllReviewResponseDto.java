@@ -14,4 +14,11 @@ public class AllReviewResponseDto {
     private float score;
     private Long cursor;
     private List<ReviewResponseDto> reviews;
+
+    public AllReviewResponseDto(long totalCount, float averageScore, Long cursor, List<ReviewResponseDto> reviewResponseDtoList) {
+        this.totalCount = totalCount;
+        this.score = averageScore;
+        this.cursor = cursor;
+        this.reviews = reviewResponseDtoList;
+    }
 }

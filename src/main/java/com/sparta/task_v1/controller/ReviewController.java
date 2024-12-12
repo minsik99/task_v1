@@ -2,6 +2,7 @@ package com.sparta.task_v1.controller;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.sparta.task_v1.dto.AllReviewResponseDto;
 import com.sparta.task_v1.dto.ReviewRequestDto;
 import com.sparta.task_v1.service.ReviewService;
 import org.springframework.http.HttpStatus;
@@ -17,6 +18,16 @@ public class ReviewController {
 
     public ReviewController(ReviewService reviewService) {
         this.reviewService = reviewService;
+    }
+
+    // 리뷰 조회
+    @GetMapping("/{productId}/reviews")
+    public ResponseEntity<AllReviewResponseDto> getReviews(@PathVariable Long productId,
+                                                        @RequestParam(value = "cursor", required = false) Long cursor,
+                                                        @RequestParam(value = "size", defaultValue = "10") int size) {
+
+        AllReviewResponseDto responseDto = reviewService.getReviews(productId, cursor, size);
+        return ResponseEntity.ok(responseDto);
     }
 
     // 리뷰 등록
@@ -39,10 +50,5 @@ public class ReviewController {
         } catch (JsonProcessingException e) {
             throw new IllegalArgumentException("Invalid JSON format for 'review'");
         }
-    }
-
-    @GetMapping("/{productId}/reviews")
-    public ResponseEntity<String> testEndpoint(@PathVariable Long productId) {
-        return ResponseEntity.ok("Endpoint is working for productId: " + productId);
     }
 }
